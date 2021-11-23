@@ -1,3 +1,21 @@
+from random import randint
+
+
+def generate_ability_score(challenge_rating: int) -> int:
+    dice = 3 + int(challenge_rating / 5)
+    dropped_dice = 0
+    if dice > 5:
+        dropped_dice = dice - 5
+    auxiliary_score = int
+    auxiliary_list = []
+    for i in range(0, dice):
+        auxiliary_list.append(randint(1, 6))
+    auxiliary_list.sort(reverse=True)
+    for i in range(0, dice - dropped_dice):
+        auxiliary_score += auxiliary_list[i]
+    return auxiliary_score
+
+
 class StatBlock:
     name = str
     armor_class = int
@@ -11,6 +29,12 @@ class StatBlock:
     alignment = str
     challenge = int
     flavor_text = str
+    strength = int
+    dexterity = int
+    constitution = int
+    wisdom = int
+    intelligence = int
+    charisma = int
 
     def __init__(self, challenge_rating: int, name: str, size: str, type: str):
         self.name = name
@@ -42,6 +66,34 @@ class StatBlock:
         self.proficiency_bonus: int = prof_list[challenge_rating]
         self.save_dc: int = dc_list[challenge_rating]
 
+        # generate ability scores
+        self.strength = generate_ability_score(challenge_rating)
+        self.dexterity = generate_ability_score(challenge_rating)
+        self.constitution = generate_ability_score(challenge_rating)
+        self.wisdom = generate_ability_score(challenge_rating)
+        self.intelligence = generate_ability_score(challenge_rating)
+        self.charisma = generate_ability_score(challenge_rating)
+
+    def return_ability_bonus(self, ability: str):
+        ability_score = int
+        if ability == "str":
+            ability_score = self.strength
+        elif ability == "dex":
+            ability_score = self.dexterity
+        elif ability == "con":
+            ability_score = self.constitution
+        elif ability == "wis":
+            ability_score = self.wisdom
+        elif ability == "int":
+            ability_score = self.intelligence
+        elif ability == "cha":
+            ability_score == self.charisma
+        else:
+            raise ValueError("ability must be str, dex, con, wis, int, or cha")
+        ability_score = ability_score - 10
+        ability_score = int(ability_score / 2)
+        return ability_score
+
     def print(self):
         print(
             f'{self.name}\n{self.size} {self.type}, {self.alignment}\nArmor Class {self.armor_class}\nHit Points {self.hit_points}\nChallenge {self.challenge}')
@@ -59,6 +111,7 @@ def statblock_gen(challenge_rating: int, name: str, size: str, monster_type: str
     # TODO step 3 adjust statistics
     # TODO step 4 alignment
     # TODO step 5 ability scores
+
     # TODO step 7 adjust armor class
     # TODO step 8 adjust hit points
     # TODO step 9 figure out vulnerabilities, immunities and such

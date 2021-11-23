@@ -8,8 +8,9 @@ class StatBlock:
     save_dc = int
     size = str
 
-    def __init__(self, challenge_rating: int):
-        self.name = 'todo'  # TODO
+    def __init__(self, challenge_rating: int, name: str, size: str):
+        self.name = name
+        self.size = size
 
         # values per CR are as specified in the "Monster Statistics by Challenge Rating" table on page 274 of the DMG
         # list index corresponds to target CR, as in CR 0 has 10 AC and so on
@@ -56,8 +57,12 @@ def statblock_gen(challenge_rating: int) -> StatBlock:
 
 if __name__ == '__main__':
     CR_test = 10
+    name_test = "Chungus"
+    size_test = "Large"
     try:
-        Statblock_test = statblock_gen(CR_test)
+        Statblock_test = statblock_gen(CR_test, name_test, size_test)
     except ValueError as err:
         print(err)
+
+    Statblock_test.print()
 

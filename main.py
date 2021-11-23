@@ -7,10 +7,17 @@ class StatBlock:
     proficiency_bonus = int
     save_dc = int
     size = str
+    type = str
+    alignment = str
+    challenge = int
+    flavor_text = str
 
-    def __init__(self, challenge_rating: int, name: str, size: str):
+    def __init__(self, challenge_rating: int, name: str, size: str, type: str):
         self.name = name
         self.size = size
+        self.type = type
+        self.alignment = "True Neutral"  # placeholder
+        self.challenge = challenge_rating
 
         # values per CR are as specified in the "Monster Statistics by Challenge Rating" table on page 274 of the DMG
         # list index corresponds to target CR, as in CR 0 has 10 AC and so on
@@ -26,23 +33,30 @@ class StatBlock:
                    21, 21, 22, 22, 22, 23]
 
         if challenge_rating >= 17:
-            self.armor_class = 19
+            self.armor_class: int = 19
         else:
-            self.armor_class = ac_list[challenge_rating]
-        self.hit_points = hp_list[challenge_rating]
-        self.attack_bonus = atk_list[challenge_rating]
-        self.damage_output = dmg_list[challenge_rating]
-        self.proficiency_bonus = prof_list[challenge_rating]
-        self.save_dc = dc_list[challenge_rating]
+            self.armor_class: int = ac_list[challenge_rating]
+        self.hit_points: int = hp_list[challenge_rating]
+        self.attack_bonus: int = atk_list[challenge_rating]
+        self.damage_output: int = dmg_list[challenge_rating]
+        self.proficiency_bonus: int = prof_list[challenge_rating]
+        self.save_dc: int = dc_list[challenge_rating]
 
     def print(self):
-        print(self.name)
+        print(
+            f'{self.name}\n{self.size} {self.type}, {self.alignment}\nArmor Class {self.armor_class}\nHit Points {self.hit_points}\nChallenge {self.challenge}')
+        print(self.flavor_text)
 
 
-def statblock_gen(challenge_rating: int) -> StatBlock:
+def statblock_gen(challenge_rating: int, name: str, size: str, monster_type: str) -> StatBlock:
     if challenge_rating > 30 or challenge_rating < 0:
         raise ValueError('CR can\'t be higher than 30 or lower than 0')
-    work_statblock = StatBlock()
+    work_statblock = StatBlock(challenge_rating, name, size, monster_type)
+    # NLP generated flavor text goes here
+    work_statblock.flavor_text = """The Chungus is a True Neutral Large Beast, the size of a fully grown bull,
+     with a coat of black and brown.\n
+     The Chungus is a kind, peace-loving creature who seeks to be left alone to live in its forest.\n
+     However, when the Chungus is threatened, it will fight with ferocity and cunning."""
     # TODO step 1 get name
     # TODO step 2 figure out size
     # TODO step 3 adjust statistics
@@ -59,10 +73,10 @@ if __name__ == '__main__':
     CR_test = 10
     name_test = "Chungus"
     size_test = "Large"
+    type_test = "Beast"
     try:
-        Statblock_test = statblock_gen(CR_test, name_test, size_test)
+        Statblock_test = statblock_gen(CR_test, name_test, size_test, type_test)
     except ValueError as err:
         print(err)
 
     Statblock_test.print()
-

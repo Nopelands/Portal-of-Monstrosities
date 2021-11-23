@@ -53,10 +53,7 @@ def statblock_gen(challenge_rating: int, name: str, size: str, monster_type: str
         raise ValueError('CR can\'t be higher than 30 or lower than 0')
     work_statblock = StatBlock(challenge_rating, name, size, monster_type)
     # NLP generated flavor text goes here
-    work_statblock.flavor_text = """The Chungus is a True Neutral Large Beast, the size of a fully grown bull,
-     with a coat of black and brown.\n
-     The Chungus is a kind, peace-loving creature who seeks to be left alone to live in its forest.\n
-     However, when the Chungus is threatened, it will fight with ferocity and cunning."""
+    work_statblock.flavor_text = "The Chungus is a True Neutral Large Beast, the size of a fully grown bull, with a coat of black and brown.\nThe Chungus is a kind, peace-loving creature who seeks to be left alone to live in its forest.\nHowever, when the Chungus is threatened, it will fight with ferocity and cunning."
     # TODO step 1 get name
     # TODO step 2 figure out size
     # TODO step 3 adjust statistics

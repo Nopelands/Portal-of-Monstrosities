@@ -1,19 +1,12 @@
-from random import randint
+from random import randint, shuffle
 
 
-def generate_ability_score(challenge_rating: int) -> int:
-    dice = 3 + int(challenge_rating / 5)
-    dropped_dice = 0
-    if dice > 5:
-        dropped_dice = dice - 5
-    auxiliary_score = int
-    auxiliary_list = []
-    for i in range(0, dice):
-        auxiliary_list.append(randint(1, 6))
-    auxiliary_list.sort(reverse=True)
-    for i in range(0, dice - dropped_dice):
-        auxiliary_score += auxiliary_list[i]
-    return auxiliary_score
+def generate_ability_scores(challenge_rating: int) -> list[int]:
+    ability_array = []
+    for i in range(0, 6):
+        ability_array.append(randint(i, 20 + int(challenge_rating / 3)))
+    shuffle(ability_array)
+    return ability_array
 
 
 class StatBlock:
@@ -67,12 +60,13 @@ class StatBlock:
         self.save_dc: int = dc_list[challenge_rating]
 
         # generate ability scores
-        self.strength = generate_ability_score(challenge_rating)
-        self.dexterity = generate_ability_score(challenge_rating)
-        self.constitution = generate_ability_score(challenge_rating)
-        self.wisdom = generate_ability_score(challenge_rating)
-        self.intelligence = generate_ability_score(challenge_rating)
-        self.charisma = generate_ability_score(challenge_rating)
+        ability_array = generate_ability_scores(challenge_rating)
+        self.strength = ability_array[0]
+        self.dexterity = ability_array[1]
+        self.constitution = ability_array[2]
+        self.wisdom = ability_array[3]
+        self.intelligence = ability_array[4]
+        self.charisma = ability_array[5]
 
     def return_ability_bonus(self, ability: str):
         ability_score = int
@@ -87,7 +81,7 @@ class StatBlock:
         elif ability == "int":
             ability_score = self.intelligence
         elif ability == "cha":
-            ability_score == self.charisma
+            ability_score = self.charisma
         else:
             raise ValueError("ability must be str, dex, con, wis, int, or cha")
         ability_score = ability_score - 10
@@ -95,8 +89,18 @@ class StatBlock:
         return ability_score
 
     def print(self):
-        print(
-            f'{self.name}\n{self.size} {self.type}, {self.alignment}\nArmor Class {self.armor_class}\nHit Points {self.hit_points}\nChallenge {self.challenge}')
+        print(self.name)
+        print(f'{self.size} {self.type}, {self.alignment}')
+        print(f'Armor Class {self.armor_class}')
+        print(f'Hit Points {self.hit_points}')
+        print(f'STR {self.strength}(+{self.return_ability_bonus("str")}) \
+DEX {self.dexterity}(+{self.return_ability_bonus("dex")}) \
+CON {self.constitution}(+{self.return_ability_bonus("con")}) \
+INT {self.intelligence}(+{self.return_ability_bonus("int")}) \
+WIS {self.wisdom}(+{self.return_ability_bonus("wis")}) \
+CHA {self.charisma}(+{self.return_ability_bonus("cha")})')
+        print(f'Challenge {self.challenge}')
+
         print(self.flavor_text)
 
 
@@ -105,7 +109,9 @@ def statblock_gen(challenge_rating: int, name: str, size: str, monster_type: str
         raise ValueError('CR can\'t be higher than 30 or lower than 0')
     work_statblock = StatBlock(challenge_rating, name, size, monster_type)
     # NLP generated flavor text goes here
-    work_statblock.flavor_text = "The Chungus is a True Neutral Large Beast, the size of a fully grown bull, with a coat of black and brown.\nThe Chungus is a kind, peace-loving creature who seeks to be left alone to live in its forest.\nHowever, when the Chungus is threatened, it will fight with ferocity and cunning."
+    work_statblock.flavor_text = "The Chungus is a True Neutral Large Beast, the size of a fully grown bull,\
+with a coat of black and brown.\nThe Chungus is a kind, peace-loving creature who seeks to be left alone to live\
+in its forest.\nHowever, when the Chungus is threatened, it will fight with ferocity and cunning."
     # TODO step 1 get name
     # TODO step 2 figure out size
     # TODO step 3 adjust statistics
@@ -120,7 +126,7 @@ def statblock_gen(challenge_rating: int, name: str, size: str, monster_type: str
 
 
 if __name__ == '__main__':
-    CR_test = 10
+    CR_test = int(input("cr: "))
     name_test = "Chungus"
     size_test = "Large"
     type_test = "Beast"

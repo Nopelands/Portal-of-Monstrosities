@@ -1,10 +1,10 @@
 from random import randint, shuffle
-
+import requests
 
 def generate_ability_scores(challenge_rating: int) -> list[int]:
     ability_array = []
     for i in range(0, 6):
-        ability_array.append(randint(i, 20 + int(challenge_rating / 3)))
+        ability_array.append(randint(3 + i, 20 + int(challenge_rating / 3)))
     shuffle(ability_array)
     return ability_array
 
@@ -112,13 +112,8 @@ def statblock_gen(challenge_rating: int, name: str, size: str, monster_type: str
     work_statblock.flavor_text = "The Chungus is a True Neutral Large Beast, the size of a fully grown bull,\
 with a coat of black and brown.\nThe Chungus is a kind, peace-loving creature who seeks to be left alone to live\
 in its forest.\nHowever, when the Chungus is threatened, it will fight with ferocity and cunning."
-    # TODO step 1 get name
-    # TODO step 2 figure out size
-    # TODO step 3 adjust statistics
-    # TODO step 4 alignment
-    # TODO step 5 ability scores
-
     # TODO step 7 adjust armor class
+
     # TODO step 8 adjust hit points
     # TODO step 9 figure out vulnerabilities, immunities and such
     # do things

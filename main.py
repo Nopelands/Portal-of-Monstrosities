@@ -26,7 +26,6 @@ if __name__ == '__main__':
     type_test = "Beast"
     try:
         Statblock_test = statblock_gen(CR_test, name_test, size_test, type_test)
+        Statblock_test.print()
     except ValueError as err:
         print(err)
-
-    Statblock_test.print()

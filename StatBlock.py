@@ -11,15 +11,21 @@ def generate_ability_scores(challenge_rating: int) -> list[int]:
 
 class StatBlock:
     name = str
+    size = str
+    type = str
+    alignment = str
+    speed_type = str
+    sense_type = str
+    languages = list[str]
+
+    senses = int
+    speed = int
     armor_class = int
     hit_points = int
     attack_bonus = int
     damage_output = int
     proficiency_bonus = int
     save_dc = int
-    size = str
-    type = str
-    alignment = str
     challenge = int
     flavor_text = str
     strength = int
@@ -69,7 +75,6 @@ class StatBlock:
         self.charisma = ability_array[5]
 
     def return_ability_bonus(self, ability: str):
-        ability_score = int
         if ability == "str":
             ability_score = self.strength
         elif ability == "dex":

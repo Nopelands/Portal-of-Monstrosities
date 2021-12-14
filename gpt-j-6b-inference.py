@@ -1,11 +1,11 @@
 # remember to
-# pip install torch
+# pip install tensorflow
 # pip install transformers
 
-from transformers import GPTJForCausalLM
-import torch
+from transformers import GPTJForCausalLM, AutoTokenizer
+import tensorflow
 
-model = GPTJForCausalLM.from_pretrained("EleutherAI/gpt-j-6B", revision="float16", torch_dtype=torch.float16, low_cpu_mem_usage=True)
+model = GPTJForCausalLM.from_pretrained("EleutherAI/gpt-j-6B", revision="float16", torch_dtype=tf.float16, low_cpu_mem_usage=True)
 tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
 context = "This is a test"
 

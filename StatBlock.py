@@ -5,18 +5,18 @@ def generate_ability_scores(challenge_rating: int) -> list[int]:
     ability_array = []
     for i in range(0, 6):
         ability_array.append(randint(3 + i, 20 + int(challenge_rating / 3)))
-    shuffle(ability_array)
+    ability_array.sort()
     return ability_array
 
 
 class StatBlock:
     name = str
     size = str
-    type = str
+    monster_type = str
     alignment = str
     speed_type = str
     sense_type = str
-    languages = list[str]
+    languages = str
 
     senses = int
     speed = int
@@ -34,11 +34,12 @@ class StatBlock:
     wisdom = int
     intelligence = int
     charisma = int
+    perception_proficiency = 12
 
-    def __init__(self, challenge_rating: int, name: str, size: str, type: str):
+    def __init__(self, challenge_rating: int, name: str, size: str, monster_type: str):
         self.name = name
         self.size = size
-        self.type = type
+        self.monster_type = monster_type
         self.alignment = "True Neutral"  # placeholder
         self.challenge = challenge_rating
 
@@ -64,6 +65,92 @@ class StatBlock:
         self.damage_output: int = dmg_list[challenge_rating]
         self.proficiency_bonus: int = prof_list[challenge_rating]
         self.save_dc: int = dc_list[challenge_rating]
+
+        # do typing
+
+        if monster_type == "aberration":
+            possible_alignments = ["Lawful Evil", "Neutral Evil", "Chaotic Evil"]
+            shuffle(possible_alignments)
+            self.alignment = possible_alignments[0]
+            possible_speeds = ["fly", "fly", "walk", "walk", "burrow"]
+            shuffle(possible_speeds)
+            self.speed_type = possible_speeds[0]
+            magnitude = randint(1, 10)
+            self.speed = magnitude * 10
+            possible_senses = ["darkvision", "darkvision", "blindsight", "blindsight", "tremorsense", "truesight"]
+            shuffle(possible_senses)
+            self.sense_type = possible_senses[0]
+            magnitude = randint(3, 12)
+            self.senses = magnitude * 10
+            self.languages = "Deep Speech, Undercommon"
+        elif monster_type == "beast":
+            self.alignment = "unaligned"
+            possible_speeds = ["fly", "swim", "climb", "walk", "burrow"]
+            shuffle(possible_speeds)
+            self.speed_type = possible_speeds[0]
+            magnitude = randint(3, 8)
+            self.speed = magnitude * 10
+            possible_senses = ["darkvision", "blindsight"]
+            shuffle(possible_senses)
+            self.sense_type = possible_senses[0]
+            magnitude = randint(3, 12)
+            self.senses = magnitude * 10
+            self.languages = "-"
+        elif monster_type == "construct":
+            self.alignment = "unaligned"
+            possible_speeds = ["fly", "fly", "walk", "walk", "burrow"]
+            shuffle(possible_speeds)
+            self.speed_type = possible_speeds[0]
+            magnitude = randint(3, 6)
+            self.speed = magnitude * 10
+            possible_senses = ["darkvision", "darkvision", "blindsight", "blindsight", "tremorsense", "truesight"]
+            shuffle(possible_senses)
+            self.sense_type = possible_senses[0]
+            magnitude = randint(6, 12)
+            self.senses = magnitude * 10
+            self.languages = "Deep Speech, Undercommon"
+        elif monster_type == "elemental":
+            self.alignment = "Neutral"
+            possible_speeds = ["fly", "fly", "swim", "walk", "burrow"]
+            shuffle(possible_speeds)
+            self.speed_type = possible_speeds[0]
+            magnitude = randint(6, 12)
+            self.speed = magnitude * 10
+            possible_senses = ["darkvision", "darkvision", "blindsight", "blindsight", "tremorsense", "truesight"]
+            shuffle(possible_senses)
+            self.sense_type = possible_senses[0]
+            magnitude = randint(3, 12)
+            self.senses = magnitude * 10
+            self.languages = "Aquan, Auran, Ignan, Terran"
+        elif monster_type == "monstrosity":
+            possible_alignments = ["Lawful Evil", "Neutral Evil", "Chaotic Evil", "unaligned"]
+            shuffle(possible_alignments)
+            self.alignment = possible_alignments[0]
+            possible_speeds = ["fly", "swim", "walk", "walk", "burrow"]
+            shuffle(possible_speeds)
+            self.speed_type = possible_speeds[0]
+            magnitude = randint(4, 12)
+            self.speed = magnitude * 10
+            possible_senses = ["darkvision", "darkvision", "blindsight", "blindsight", "tremorsense", "truesight"]
+            shuffle(possible_senses)
+            self.sense_type = possible_senses[0]
+            magnitude = randint(3, 12)
+            self.senses = magnitude * 10
+            self.languages = "Common"
+        elif monster_type == "plant":
+            possible_alignments = ["Lawful Evil", "Neutral Evil", "Chaotic Evil", "Neutral", "unaligned"]
+            shuffle(possible_alignments)
+            self.alignment = possible_alignments[0]
+            possible_speeds = ["swim", "climb", "walk", "walk", "burrow"]
+            shuffle(possible_speeds)
+            self.speed_type = possible_speeds[0]
+            magnitude = randint(1, 3)
+            self.speed = magnitude * 10
+            self.sense_type = "blindsight"
+            magnitude = randint(3, 12)
+            self.senses = magnitude * 10
+            self.languages = "Common, Druidic, Elvish, Sylvan"
+
 
         # generate ability scores
         ability_array = generate_ability_scores(challenge_rating)
@@ -95,15 +182,18 @@ class StatBlock:
 
     def print(self):
         print(self.name)
-        print(f'{self.size} {self.type}, {self.alignment}')
+        print(f'{self.size} {self.monster_type}, {self.alignment}')
         print(f'Armor Class {self.armor_class}')
         print(f'Hit Points {self.hit_points}')
+        print(f'Speed {self.speed_type} {self.speed} ft.')
         print(f'STR {self.strength}(+{self.return_ability_bonus("str")}) \
 DEX {self.dexterity}(+{self.return_ability_bonus("dex")}) \
 CON {self.constitution}(+{self.return_ability_bonus("con")}) \
 INT {self.intelligence}(+{self.return_ability_bonus("int")}) \
 WIS {self.wisdom}(+{self.return_ability_bonus("wis")}) \
 CHA {self.charisma}(+{self.return_ability_bonus("cha")})')
+        print(f'Senses {self.sense_type} {self.senses} ft., passive Perception {10 + self.return_ability_bonus("wis")}')
+        print(f'Languages {self.languages}')
         print(f'Challenge {self.challenge}')
 
         print(self.flavor_text)
